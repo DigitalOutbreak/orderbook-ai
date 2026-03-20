@@ -1,13 +1,16 @@
+"use client"
+
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { DocsSidebar } from "@/components/docs/docs-sidebar"
 import { DocsToc } from "@/components/docs/docs-toc"
 import { MarkdownRenderer } from "@/components/docs/markdown-renderer"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { DocsContent } from "@/lib/docs"
 import type { DocsPage } from "@/lib/docs-config"
+import { cn } from "@/lib/utils"
 
 type DocsLayoutProps = {
   page: DocsContent
@@ -24,7 +27,7 @@ export function DocsLayout({ page, pages, previous, next }: DocsLayoutProps) {
 
         <div className="min-h-0 min-w-0">
           <div className="flex h-[calc(100svh-2rem)] min-h-0 flex-col border border-border/60 bg-card/80">
-            <div className="border-b border-border/60 px-6 py-5">
+            <div className="border-b border-border/60 px-3 py-3">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground uppercase">
                   Docs
@@ -36,7 +39,9 @@ export function DocsLayout({ page, pages, previous, next }: DocsLayoutProps) {
                   {page.section}
                 </Badge>
               </div>
-              <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+            </div>
+            <div className="border-b border-border/60 px-6 py-5">
+              <h1 className="text-3xl font-semibold tracking-tight">
                 {page.title}
               </h1>
               <p className="mt-3 max-w-3xl text-[15px] leading-7 text-muted-foreground">
@@ -50,20 +55,30 @@ export function DocsLayout({ page, pages, previous, next }: DocsLayoutProps) {
               </article>
             </ScrollArea>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-6 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-3 py-3">
               {previous ? (
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/docs/${previous.slug}`}>
-                    Previous: {previous.title}
-                  </Link>
-                </Button>
+                <Link
+                  href={`/docs/${previous.slug}`}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "xs" }),
+                    "min-w-20 justify-center"
+                  )}
+                >
+                  Previous
+                </Link>
               ) : (
                 <div />
               )}
               {next ? (
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/docs/${next.slug}`}>Next: {next.title}</Link>
-                </Button>
+                <Link
+                  href={`/docs/${next.slug}`}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "xs" }),
+                    "min-w-20 justify-center"
+                  )}
+                >
+                  Next
+                </Link>
               ) : null}
             </div>
           </div>

@@ -7,9 +7,13 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const sheetVariants = cva(
-  "fixed z-50 flex flex-col gap-0 border-border bg-card text-card-foreground shadow-2xl shadow-black/30 data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=open]:duration-300",
+  "fixed z-50 flex flex-col gap-0 border-border bg-card text-card-foreground shadow-2xl shadow-black/30",
   {
     variants: {
+      animated: {
+        true: "data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=open]:duration-300",
+        false: "",
+      },
       side: {
         top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
@@ -20,6 +24,7 @@ const sheetVariants = cva(
       },
     },
     defaultVariants: {
+      animated: true,
       side: "right",
     },
   }
@@ -43,13 +48,16 @@ function SheetPortal(props: React.ComponentProps<typeof Dialog.Portal>) {
 
 function SheetOverlay({
   className,
+  animated = true,
   ...props
-}: React.ComponentProps<typeof Dialog.Overlay>) {
+}: React.ComponentProps<typeof Dialog.Overlay> & { animated?: boolean }) {
   return (
     <Dialog.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px]",
+        animated &&
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
         className
       )}
       {...props}
@@ -61,15 +69,18 @@ function SheetContent({
   className,
   children,
   side = "right",
+  animated = true,
   ...props
 }: React.ComponentProps<typeof Dialog.Content> &
   VariantProps<typeof sheetVariants>) {
+  const isAnimated = animated ?? true
+
   return (
     <SheetPortal>
-      <SheetOverlay />
+      <SheetOverlay animated={isAnimated} />
       <Dialog.Content
         data-slot="sheet-content"
-        className={cn(sheetVariants({ side }), className)}
+        className={cn(sheetVariants({ side, animated: isAnimated }), className)}
         {...props}
       >
         {children}

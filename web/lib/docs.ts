@@ -14,7 +14,8 @@ export type DocsContent = DocsPage & {
   headings: DocsHeading[]
 }
 
-const docsDir = path.join(process.cwd(), "content", "docs")
+const webDocsDir = path.join(process.cwd(), "content", "docs")
+const repoDocsDir = path.join(process.cwd(), "..", "docs")
 
 function slugify(value: string) {
   return value
@@ -59,15 +60,24 @@ function parseFrontmatter(source: string) {
 }
 
 function extractHeadings(markdown: string): DocsHeading[] {
+  const counts = new Map<string, number>()
+
   return markdown
     .split("\n")
     .map((line) => line.match(/^(#{1,3})\s+(.*)$/))
     .filter((match): match is RegExpMatchArray => Boolean(match))
-    .map((match) => ({
-      level: match[1].length,
-      text: match[2].trim(),
-      id: slugify(match[2].trim()),
-    }))
+    .map((match) => {
+      const text = match[2].trim()
+      const baseId = slugify(text)
+      const count = counts.get(baseId) ?? 0
+      counts.set(baseId, count + 1)
+
+      return {
+        level: match[1].length,
+        text,
+        id: count === 0 ? baseId : `${baseId}-${count + 1}`,
+      }
+    })
 }
 
 export function getDocsPages() {
@@ -78,11 +88,14 @@ export function getDocsPageBySlug(slug: string) {
   return DOCS_PAGES.find((page) => page.slug === slug)
 }
 
-export async function getDocsContent(slug: string): Promise<DocsContent | null> {
+export async function getDocsContent(
+  slug: string
+): Promise<DocsContent | null> {
   const page = getDocsPageBySlug(slug)
   if (!page) return null
 
-  const source = await fs.readFile(path.join(docsDir, page.file), "utf8")
+  const sourceDir = page.source === "repo" ? repoDocsDir : webDocsDir
+  const source = await fs.readFile(path.join(sourceDir, page.file), "utf8")
   const { metadata, content } = parseFrontmatter(source)
 
   return {
@@ -98,6 +111,9 @@ export function getDocsNeighbors(slug: string) {
   const index = DOCS_PAGES.findIndex((page) => page.slug === slug)
   return {
     previous: index > 0 ? DOCS_PAGES[index - 1] : null,
-    next: index >= 0 && index < DOCS_PAGES.length - 1 ? DOCS_PAGES[index + 1] : null,
+    next:
+      index >= 0 && index < DOCS_PAGES.length - 1
+        ? DOCS_PAGES[index + 1]
+        : null,
   }
 }

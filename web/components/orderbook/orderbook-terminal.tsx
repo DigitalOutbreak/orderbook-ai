@@ -48,8 +48,27 @@ export function OrderbookTerminal() {
   const [events, setEvents] = React.useState<OrderbookEvent[]>([])
   const [view, setView] = React.useState<OrderbookView>("split")
   const [glossaryOpen, setGlossaryOpen] = React.useState(false)
+  const [glossaryAnimated, setGlossaryAnimated] = React.useState(true)
   const [displayOptions, setDisplayOptions] =
     React.useState<OrderbookDisplayOption[]>(displayDefaults)
+
+  React.useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+    const handlePageShow = () => {
+      setGlossaryAnimated(false)
+      timeoutId = setTimeout(() => {
+        setGlossaryAnimated(true)
+      }, 260)
+    }
+
+    window.addEventListener("pageshow", handlePageShow)
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow)
+      if (timeoutId) clearTimeout(timeoutId)
+    }
+  }, [])
 
   const heat = displayOptions.includes("heat")
   const showTotals = displayOptions.includes("totals")
@@ -252,7 +271,11 @@ export function OrderbookTerminal() {
           </div>
         </div>
       </div>
-      <GlossarySheet open={glossaryOpen} onOpenChange={setGlossaryOpen} />
+      <GlossarySheet
+        open={glossaryOpen}
+        onOpenChange={setGlossaryOpen}
+        animated={glossaryAnimated}
+      />
     </div>
   )
 }

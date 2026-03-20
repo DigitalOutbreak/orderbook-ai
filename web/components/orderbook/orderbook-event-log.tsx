@@ -3,7 +3,7 @@
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 
@@ -41,9 +41,12 @@ export function OrderbookEventLog({
           >
             Glossary
           </Button>
-          <Button asChild type="button" variant="outline" size="xs">
-            <Link href="/docs">Docs</Link>
-          </Button>
+          <a
+            href="/docs/learning-path"
+            className={cn(buttonVariants({ variant: "outline", size: "xs" }))}
+          >
+            Docs
+          </a>
           <Button asChild type="button" variant="outline" size="xs">
             <Link href="/learn/lessons">Lessons</Link>
           </Button>

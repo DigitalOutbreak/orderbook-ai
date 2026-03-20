@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@view-transition {
+  navigation: auto;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -124,5 +128,51 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+.docs-heading-flash {
+  animation: docs-heading-flash 700ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-group(root) {
+    animation-duration: 210ms;
+    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    mix-blend-mode: normal;
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  .docs-heading-flash {
+    animation: none;
+  }
+}
+
+@keyframes docs-heading-flash {
+  0% {
+    color: color-mix(in oklab, var(--foreground) 100%, transparent);
+    text-shadow: 0 0 0 transparent;
+  }
+
+  35% {
+    color: color-mix(in oklab, var(--foreground) 82%, oklch(0.82 0.11 180));
+    text-shadow: 0 0 18px rgba(94, 234, 212, 0.18);
+  }
+
+  100% {
+    color: color-mix(in oklab, var(--foreground) 100%, transparent);
+    text-shadow: 0 0 0 transparent;
   }
 }

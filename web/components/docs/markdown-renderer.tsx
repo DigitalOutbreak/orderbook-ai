@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DOCS_PAGES } from "@/lib/docs-config"
 import { cn } from "@/lib/utils"
 
 type Block =
@@ -43,6 +44,9 @@ function splitTableRow(line: string) {
 function renderInline(text: string): React.ReactNode[] {
   const tokens: React.ReactNode[] = []
   const pattern = /(`[^`]+`)|(\[([^\]]+)\]\(([^)]+)\))/g
+  const docsLookup = new Map(
+    DOCS_PAGES.map((page) => [page.file.replace(/\\/g, "/"), page.slug])
+  )
   let lastIndex = 0
   let match: RegExpExecArray | null
 
@@ -61,17 +65,42 @@ function renderInline(text: string): React.ReactNode[] {
         </code>
       )
     } else if (match[2]) {
-      tokens.push(
-        <a
-          key={`${match.index}-link`}
-          href={match[4]}
-          className="text-emerald-300 underline underline-offset-4 hover:text-emerald-200"
-          target={match[4].startsWith("http") ? "_blank" : undefined}
-          rel={match[4].startsWith("http") ? "noreferrer" : undefined}
-        >
-          {match[3]}
-        </a>
-      )
+      const href = match[4]
+      const normalizedHref = href.replace(/\\/g, "/")
+      const docsPathMatch = normalizedHref.match(/(?:^|\/)docs\/(.+?\.md)$/)
+      const docsSlug =
+        (docsPathMatch && docsLookup.get(docsPathMatch[1])) ||
+        docsLookup.get(normalizedHref.replace(/^\/+/, ""))
+      const resolvedHref = docsSlug ? `/docs/${docsSlug}` : href
+      const localFilePath = normalizedHref.startsWith("/Users/")
+      const external =
+        resolvedHref.startsWith("http") ||
+        resolvedHref.startsWith("mailto:") ||
+        resolvedHref.startsWith("tel:")
+
+      if (localFilePath && !docsSlug) {
+        tokens.push(
+          <code
+            key={`${match.index}-file`}
+            title={normalizedHref}
+            className="rounded-none bg-muted px-1.5 py-0.5 font-mono text-[0.92em] text-foreground"
+          >
+            {match[3]}
+          </code>
+        )
+      } else {
+        tokens.push(
+          <a
+            key={`${match.index}-link`}
+            href={resolvedHref}
+            className="text-emerald-300 underline underline-offset-4 hover:text-emerald-200"
+            target={external ? "_blank" : undefined}
+            rel={external ? "noreferrer" : undefined}
+          >
+            {match[3]}
+          </a>
+        )
+      }
     }
 
     lastIndex = pattern.lastIndex
@@ -88,6 +117,7 @@ function parseMarkdown(markdown: string): Block[] {
   const lines = markdown.replace(/\r\n/g, "\n").split("\n")
   const blocks: Block[] = []
   let index = 0
+  const headingCounts = new Map<string, number>()
 
   while (index < lines.length) {
     const line = lines[index]
@@ -106,11 +136,16 @@ function parseMarkdown(markdown: string): Block[] {
 
     const headingMatch = trimmed.match(/^(#{1,3})\s+(.*)$/)
     if (headingMatch) {
+      const text = headingMatch[2].trim()
+      const baseId = slugify(text)
+      const count = headingCounts.get(baseId) ?? 0
+      headingCounts.set(baseId, count + 1)
+
       blocks.push({
         type: "heading",
         level: headingMatch[1].length,
-        text: headingMatch[2].trim(),
-        id: slugify(headingMatch[2].trim()),
+        text,
+        id: count === 0 ? baseId : `${baseId}-${count + 1}`,
       })
       index += 1
       continue
@@ -249,7 +284,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         if (block.type === "paragraph") {
           return (
-            <p key={`p-${index}`} className="text-[15px] leading-7 text-foreground/88">
+            <p
+              key={`p-${index}`}
+              className="text-[15px] leading-7 text-foreground/88"
+            >
               {renderInline(block.text)}
             </p>
           )
@@ -268,7 +306,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         if (block.type === "unordered-list") {
           return (
-            <ul key={`ul-${index}`} className="space-y-2 pl-5 text-[15px] leading-7 text-foreground/88">
+            <ul
+              key={`ul-${index}`}
+              className="space-y-2 pl-5 text-[15px] leading-7 text-foreground/88"
+            >
               {block.items.map((item) => (
                 <li key={item} className="list-disc">
                   {renderInline(item)}
@@ -280,7 +321,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         if (block.type === "ordered-list") {
           return (
-            <ol key={`ol-${index}`} className="space-y-2 pl-5 text-[15px] leading-7 text-foreground/88">
+            <ol
+              key={`ol-${index}`}
+              className="space-y-2 pl-5 text-[15px] leading-7 text-foreground/88"
+            >
               {block.items.map((item, itemIndex) => (
                 <li key={`${item}-${itemIndex}`} className="list-decimal">
                   {renderInline(item)}
@@ -292,7 +336,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         if (block.type === "code") {
           return (
-            <div key={`code-${index}`} className="overflow-hidden border border-border/60 bg-background/70">
+            <div
+              key={`code-${index}`}
+              className="overflow-hidden border border-border/60 bg-background/70"
+            >
               <div className="flex items-center justify-between border-b border-border/60 px-3 py-2">
                 <span className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground uppercase">
                   {block.language || "code"}
@@ -307,7 +354,10 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
 
         if (block.type === "table") {
           return (
-            <div key={`table-${index}`} className="overflow-hidden border border-border/60 bg-background/40">
+            <div
+              key={`table-${index}`}
+              className="overflow-hidden border border-border/60 bg-background/40"
+            >
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -333,7 +383,9 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         }
 
         if (block.type === "hr") {
-          return <div key={`hr-${index}`} className="border-t border-border/60" />
+          return (
+            <div key={`hr-${index}`} className="border-t border-border/60" />
+          )
         }
 
         return null

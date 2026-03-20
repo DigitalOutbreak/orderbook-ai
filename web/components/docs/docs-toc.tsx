@@ -1,9 +1,8 @@
 "use client"
 
-import Link from "next/link"
+import * as React from "react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { DocsHeading } from "@/lib/docs"
 
@@ -12,6 +11,35 @@ type DocsTocProps = {
 }
 
 export function DocsToc({ headings }: DocsTocProps) {
+  const handleHeadingClick = React.useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+      event.preventDefault()
+
+      const target = document.getElementById(id)
+      if (!target) return
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
+
+      history.replaceState(null, "", `#${id}`)
+      target.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "start",
+      })
+
+      target.classList.remove("docs-heading-flash")
+      window.requestAnimationFrame(() => {
+        target.classList.add("docs-heading-flash")
+      })
+
+      window.setTimeout(() => {
+        target.classList.remove("docs-heading-flash")
+      }, 700)
+    },
+    []
+  )
+
   if (headings.length === 0) return null
 
   return (
@@ -31,26 +59,17 @@ export function DocsToc({ headings }: DocsTocProps) {
           {headings
             .filter((heading) => heading.level <= 3)
             .map((heading) => (
-              <Link
+              <a
                 key={heading.id}
                 href={`#${heading.id}`}
+                onClick={(event) => handleHeadingClick(event, heading.id)}
                 className="block px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 {heading.text}
-              </Link>
+              </a>
             ))}
         </div>
       </ScrollArea>
-      <div className="border-t border-border/60 px-3 py-3">
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="xs">
-            <Link href="/learn">Learn</Link>
-          </Button>
-          <Button asChild variant="outline" size="xs">
-            <Link href="/">Terminal</Link>
-          </Button>
-        </div>
-      </div>
     </div>
   )
 }

@@ -19,9 +19,14 @@ import { GLOSSARY_ENTRIES } from "@/lib/glossary"
 type GlossarySheetProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  animated?: boolean
 }
 
-export function GlossarySheet({ open, onOpenChange }: GlossarySheetProps) {
+export function GlossarySheet({
+  open,
+  onOpenChange,
+  animated = true,
+}: GlossarySheetProps) {
   const [query, setQuery] = React.useState("")
 
   const filteredEntries = React.useMemo(() => {
@@ -37,7 +42,11 @@ export function GlossarySheet({ open, onOpenChange }: GlossarySheetProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full p-0 sm:max-w-[680px]">
+      <SheetContent
+        side="right"
+        animated={animated}
+        className="w-full p-0 sm:max-w-[680px]"
+      >
         <SheetHeader className="gap-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
