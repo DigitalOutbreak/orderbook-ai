@@ -5,9 +5,7 @@
 The project should be read engine-first:
 
 - `solbook-core` is the main artifact
-- `solbook-cli` is a local terminal study tool around the core
-- `solbook-egui` is a richer native visual study tool around the core, now built with `iced`
-- `solbook-api` is an optional wrapper for demos and future clients
+- `web/` is the learning terminal and docs interface around the core concepts
 
 ## Scope
 
@@ -93,7 +91,7 @@ solbook-core = { path = "../solbook-core", features = ["serde"] }
 
 That is the intended boundary for a future HTTP API, WebSocket stream, Tauri app, or other external adapter.
 
-This repository includes one optional adapter crate for that boundary in `solbook-api/`.
+This repository also includes a learning-oriented web interface in [`web/`](/Users/joeyalvarado/Developer/solbook-core/web) for studying orderbook behavior, chart state, and UI concepts alongside the engine docs.
 
 ## Invariants
 
@@ -114,51 +112,15 @@ Supporting docs live in [`docs/architecture.md`](/Users/joeyalvarado/Developer/s
 
 For engine internals and tradeoffs, read [`docs/engine-performance.md`](/Users/joeyalvarado/Developer/solbook-core/docs/engine-performance.md).
 
-If you want to study the repo as a guided project, start with [`docs/learning-path.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning-path.md) and begin at [`docs/learning/00-start-here.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/00-start-here.md). The visual mental models live in [`docs/learning/06-visual-guide.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/06-visual-guide.md), the design-tradeoff explanation lives in [`docs/learning/07-why-this-design.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/07-why-this-design.md), the beginner-friendly performance bridge lives in [`docs/learning/08-performance-bridge.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/08-performance-bridge.md), the terminal study workflow lives in [`docs/learning/09-learn-with-the-tui.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/09-learn-with-the-tui.md), and the richer native visual path lives in [`docs/learning/10-learn-with-egui.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/10-learn-with-egui.md).
+If you want to study the repo as a guided project, start with [`docs/learning-path.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning-path.md) and begin at [`docs/learning/00-start-here.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/00-start-here.md). The visual mental models live in [`docs/learning/06-visual-guide.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/06-visual-guide.md), the design-tradeoff explanation lives in [`docs/learning/07-why-this-design.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/07-why-this-design.md), and the beginner-friendly performance bridge lives in [`docs/learning/08-performance-bridge.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/08-performance-bridge.md).
 
-## Study GUI
+## Web Learning Terminal
 
-The repository now includes [`solbook-egui/`](/Users/joeyalvarado/Developer/solbook-core/solbook-egui), a native `iced` desktop app for learning the engine with a compact fixed-layout study interface.
-
-Run it with:
-
-- `cargo run -p solbook-egui`
-
-What it gives you:
-
-- a disciplined terminal-style header with engine metrics
-- a stacked order-book ladder with asks above, spread in the middle, and bids below
-- a fixed right control rail for scenarios, submit, and cancel flows
-- seeded demo liquidity on startup
-- compact state and recent-event panels under the ladder
-- quick actions plus manual order entry without any internal scrolling
-
-This is the recommended visual study interface if the terminal UI feels too clunky.
-
-## Study TUI
-
-The repository now includes [`solbook-cli/`](/Users/joeyalvarado/Developer/solbook-core/solbook-cli), a small `ratatui` terminal app for learning the engine visually without leaving the terminal.
+The repository includes [`web/`](/Users/joeyalvarado/Developer/solbook-core/web), a Next.js + shadcn study interface for reading docs and exploring trading-terminal UI ideas alongside mock orderbook state.
 
 Run it with:
 
-- `cargo run -p solbook-cli`
-
-What it shows:
-
-- asks, spread, and bids
-- recent events
-- recent accepted order ids
-- live simulation stats
-- simple order-entry and cancel forms
-- local engine execution time for each action
-- canned scenarios for resting, crossing, market sweeping, and cancel flow
-- seeded live demo profiles for balanced flow, buy pressure, sell pressure, and cancel-heavy flow
-
-This is a study tool, not a benchmark harness. Use it to see how removing ask liquidity changes the visible best ask, how selling removes bid liquidity, and how cancels clean up resting levels.
-
-It now starts with seeded demo liquidity by default so you can experiment immediately without manually building a book first.
-
-If you want the transport layer contract for a future UI, read [`docs/api-contract.md`](/Users/joeyalvarado/Developer/solbook-core/docs/api-contract.md).
+- `cd web && npm run dev`
 
 ## Quality gates
 
@@ -251,30 +213,3 @@ The repository now includes:
 Package validation can be checked with:
 
 - `cargo package`
-
-## Adapter crate
-
-`solbook-api` is a thin HTTP adapter around the core. It keeps the matching engine deterministic and single-owner by serializing access behind a `Mutex<OrderBook>` and exposing structured JSON endpoints.
-
-Current endpoints:
-
-- `GET /health`
-- `GET /market`
-- `GET /book/top`
-- `GET /book?depth=10`
-- `GET /events`
-- `POST /orders`
-- `DELETE /orders/{order_id}`
-
-Run it with:
-
-- `cargo run -p solbook-api`
-
-Adapter response model:
-
-- read and mutation endpoints return `{"sequence": <u64>, "data": ...}`
-- live updates stream over SSE from `GET /events`
-- the stream event name is currently `book_update`
-
-This is the contract a future frontend should target.
-# orderbook-ai

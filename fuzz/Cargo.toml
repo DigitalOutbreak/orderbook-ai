@@ -1,0 +1,29 @@
+[package]
+name = "solbook-core-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+solbook-core = { path = ".." }
+
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "order_flow"
+path = "fuzz_targets/order_flow.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "replay_consistency"
+path = "fuzz_targets/replay_consistency.rs"
+test = false
+doc = false
+bench = false

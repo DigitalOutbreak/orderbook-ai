@@ -1,0 +1,36 @@
+[package]
+name = "solbook-core"
+version = "0.1.0"
+edition = "2024"
+description = "Deterministic Rust exchange-core library for a SOL/USDC spot order book"
+license = "MIT"
+documentation = "https://docs.rs/solbook-core"
+readme = "README.md"
+keywords = ["exchange", "orderbook", "matching-engine", "solana", "trading"]
+categories = ["algorithms", "data-structures", "simulation"]
+
+[lib]
+bench = false
+
+[features]
+default = []
+serde = ["dep:serde", "rust_decimal/serde"]
+
+[dependencies]
+rust_decimal = "1.39.0"
+serde = { version = "1.0.228", features = ["derive"], optional = true }
+thiserror = "2.0.12"
+
+[dev-dependencies]
+criterion = "0.7.0"
+proptest = "1.7.0"
+rust_decimal_macros = "1.39.0"
+serde_json = "1.0.149"
+
+[[bench]]
+name = "throughput"
+harness = false
+
+[[bench]]
+name = "price_level_prototypes"
+harness = false

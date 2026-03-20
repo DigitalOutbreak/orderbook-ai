@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -39,11 +41,11 @@ export function OrderbookEventLog({
           >
             Glossary
           </Button>
-          <Button type="button" variant="outline" size="xs" disabled>
-            Docs
+          <Button asChild type="button" variant="outline" size="xs">
+            <Link href="/docs">Docs</Link>
           </Button>
-          <Button type="button" variant="outline" size="xs" disabled>
-            Lessons
+          <Button asChild type="button" variant="outline" size="xs">
+            <Link href="/learn/lessons">Lessons</Link>
           </Button>
           <Button type="button" variant="outline" size="xs" disabled>
             Tutorial
