@@ -4,7 +4,6 @@ import * as React from "react"
 
 import type { OrderbookEvent, OrderbookSnapshot } from "./orderbook-types"
 import {
-  applyMockLimitOrder,
   deriveOrderValues,
   formatEditableDecimal,
   parseDecimal,
@@ -12,6 +11,7 @@ import {
   type OrderFormField,
   type OrderFormSide,
 } from "@/lib/order-calculations"
+import { submitEngineLimitOrder } from "@/lib/engine-client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -54,6 +54,7 @@ export function OrderForm({
   })
   const [lastEdited, setLastEdited] = React.useState<OrderFormField>("quantity")
   const [statusMessage, setStatusMessage] = React.useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   const parsedPrice = parseDecimal(state.price)
   const parsedQuantity = parseDecimal(state.quantity)
@@ -116,28 +117,37 @@ export function OrderForm({
     setStatusMessage(null)
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!isValidOrder || parsedPrice == null || parsedQuantity == null) return
 
-    const result = applyMockLimitOrder(snapshot, {
-      side: state.side,
-      price: parsedPrice,
-      quantity: parsedQuantity,
-    })
+    try {
+      setIsSubmitting(true)
+      const result = await submitEngineLimitOrder({
+        side: state.side,
+        price: state.price,
+        quantity: state.quantity,
+      })
 
-    onSnapshotChange(result.snapshot)
-    onOrderEvent?.(result.event)
-    setStatusMessage(result.event.detail)
-    setState((current) => ({
-      ...current,
-      quantity: "",
-      total: "",
-      price:
-        current.side === "buy"
-          ? result.snapshot.stats.bestBid.toFixed(2)
-          : result.snapshot.stats.bestAsk.toFixed(2),
-    }))
+      onSnapshotChange(result.snapshot)
+      onOrderEvent?.(result.event)
+      setStatusMessage(result.event.detail)
+      setState((current) => ({
+        ...current,
+        quantity: "",
+        total: "",
+        price:
+          current.side === "buy"
+            ? result.snapshot.stats.bestBid.toFixed(2)
+            : result.snapshot.stats.bestAsk.toFixed(2),
+      }))
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error ? error.message : "Failed to submit order."
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -264,9 +274,11 @@ export function OrderForm({
                   ? "bg-emerald-500/90 text-black hover:bg-emerald-400"
                   : "bg-rose-500/90 text-black hover:bg-rose-400"
               )}
-              disabled={!isValidOrder}
+              disabled={!isValidOrder || isSubmitting}
             >
-              {state.side === "buy" ? "Buy" : "Sell"} {baseAsset}
+              {isSubmitting
+                ? "Submitting..."
+                : `${state.side === "buy" ? "Buy" : "Sell"} ${baseAsset}`}
             </Button>
           </div>
 

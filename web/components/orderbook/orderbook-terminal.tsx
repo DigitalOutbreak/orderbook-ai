@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { fetchEngineSnapshot } from "@/lib/engine-client"
 import { cn } from "@/lib/utils"
 import { MarketChartPanel } from "@/components/market-chart/market-chart-panel"
 
@@ -68,6 +69,20 @@ export function OrderbookTerminal() {
       window.removeEventListener("pageshow", handlePageShow)
       if (timeoutId) clearTimeout(timeoutId)
     }
+  }, [])
+
+  React.useEffect(() => {
+    const controller = new AbortController()
+
+    fetchEngineSnapshot(controller.signal)
+      .then((nextSnapshot) => {
+        setSnapshot(nextSnapshot)
+      })
+      .catch((error) => {
+        console.error("Failed to load engine snapshot", error)
+      })
+
+    return () => controller.abort()
   }, [])
 
   const heat = displayOptions.includes("heat")
