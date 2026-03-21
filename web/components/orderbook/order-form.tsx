@@ -170,7 +170,7 @@ export function OrderForm({
               </Badge>
             </div>
             <p className="mt-1 font-mono text-xs text-muted-foreground">
-              Limit-only mock workflow wired into the local book.
+              Limit orders submit directly into the live Rust engine.
             </p>
           </div>
           <Badge

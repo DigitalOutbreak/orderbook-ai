@@ -39,8 +39,35 @@ export type OrderbookStats = {
   mode: "mock" | "live"
 }
 
+export type OrderbookSimulation = {
+  active: boolean
+  speed: "slow" | "normal" | "fast" | "burst"
+  scenario:
+    | "balanced"
+    | "trend-up"
+    | "trend-down"
+    | "range"
+    | "bid-wall"
+    | "ask-wall"
+    | "thin-liquidity"
+  regime:
+    | "balanced"
+    | "buy-pressure"
+    | "sell-pressure"
+    | "trend-up"
+    | "trend-down"
+    | "pullback"
+    | "mean-revert"
+    | "thin"
+    | "refill"
+  reference_price: number
+  aggression_imbalance: number
+  volatility_state: string
+}
+
 export type OrderbookSnapshot = {
   stats: OrderbookStats
+  simulation: OrderbookSimulation
   bids: OrderbookLevel[]
   asks: OrderbookLevel[]
   trades: OrderbookTrade[]

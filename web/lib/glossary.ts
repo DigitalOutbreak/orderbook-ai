@@ -93,6 +93,94 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     ],
   },
   {
+    term: "Cross buy",
+    category: "Orders",
+    body: [
+      "A cross buy is a buy order submitted at the current best ask or higher so it immediately trades against resting asks.",
+      "In the simulator, Cross Buy is a shortcut for triggering an aggressive buy-side fill without typing the ticket manually.",
+    ],
+  },
+  {
+    term: "Cross sell",
+    category: "Orders",
+    body: [
+      "A cross sell is a sell order submitted at the current best bid or lower so it immediately trades against resting bids.",
+      "In the simulator, Cross Sell is a shortcut for triggering an aggressive sell-side fill without typing the ticket manually.",
+    ],
+  },
+  {
+    term: "Balanced",
+    category: "Simulation",
+    body: [
+      "Balanced is the neutral simulation scenario.",
+      "It tries to keep two-sided liquidity and mixed order flow so the market does not lean too hard in one direction.",
+    ],
+  },
+  {
+    term: "Trend up",
+    category: "Simulation",
+    body: [
+      "Trend Up biases the simulator toward upward price pressure.",
+      "You should expect more buy aggression, stronger bid support, and upward drift unless the book pushes back.",
+    ],
+  },
+  {
+    term: "Trend down",
+    category: "Simulation",
+    body: [
+      "Trend Down biases the simulator toward downward price pressure.",
+      "You should expect more sell aggression, heavier ask pressure, and downward drift unless liquidity absorbs it.",
+    ],
+  },
+  {
+    term: "Range",
+    category: "Simulation",
+    body: [
+      "Range is a mean-reverting simulation mode.",
+      "Instead of trending, price is nudged back toward a local equilibrium so you can study oscillation and two-sided liquidity.",
+    ],
+  },
+  {
+    term: "Bid wall",
+    category: "Simulation",
+    body: [
+      "Bid Wall seeds unusually heavy resting size on the bid side.",
+      "It is useful for studying how strong buy-side support changes spread behavior, depth shape, and aggressive selling.",
+    ],
+  },
+  {
+    term: "Ask wall",
+    category: "Simulation",
+    body: [
+      "Ask Wall seeds unusually heavy resting size on the ask side.",
+      "It is useful for studying how overhead sell pressure changes spread behavior, depth shape, and aggressive buying.",
+    ],
+  },
+  {
+    term: "Thin liquidity",
+    category: "Simulation",
+    body: [
+      "Thin Liquidity reduces depth and leaves wider gaps between price levels.",
+      "This scenario is useful for studying slippage, unstable top-of-book behavior, and why low liquidity feels jumpier.",
+    ],
+  },
+  {
+    term: "Reset",
+    category: "Simulation",
+    body: [
+      "Reset restores the engine to its default seeded market state.",
+      "Use it when you want to clear the current simulation path and return to a known starting point.",
+    ],
+  },
+  {
+    term: "Simulate market",
+    category: "Simulation",
+    body: [
+      "Simulate Market turns the backend market loop on or off.",
+      "When active, the Rust engine continuously generates synthetic order flow and streams the resulting book and trade updates to the UI.",
+    ],
+  },
+  {
     term: "Maker",
     category: "Execution",
     body: [
@@ -151,9 +239,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     term: "Size",
     category: "Views",
-    body: [
-      "Size means how much quantity is resting at one exact price level.",
-    ],
+    body: ["Size means how much quantity is resting at one exact price level."],
   },
   {
     term: "Total",

@@ -130,6 +130,15 @@ export function buildOrderbookSnapshot(
 ): OrderbookSnapshot {
   return {
     stats: buildOrderbookStats(bids, asks, statsOverrides),
+    simulation: {
+      active: false,
+      speed: "normal",
+      scenario: "balanced",
+      regime: "balanced",
+      reference_price: 172.0,
+      aggression_imbalance: 0,
+      volatility_state: "low",
+    },
     bids,
     asks,
     trades,

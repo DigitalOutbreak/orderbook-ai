@@ -9,14 +9,24 @@ import {
   LineSeries,
   type LineData,
   type MouseEventParams,
+  type UTCTimestamp,
   createChart,
   type IChartApi,
+  type IPriceLine,
+  type IPriceScaleApi,
   type ISeriesApi,
   type SeriesType,
 } from "lightweight-charts"
 
-import type { MarketChartType, MarketTimeframe } from "@/lib/mock-chart-data"
-import { getMockMarketDataset } from "@/lib/mock-chart-data"
+import type {
+  MarketCandle,
+  MarketChartType,
+  MarketTimeframe,
+} from "@/lib/mock-chart-data"
+import {
+  getMockMarketDataset,
+  getTimeframeSeconds,
+} from "@/lib/mock-chart-data"
 import { cn } from "@/lib/utils"
 import {
   CardAction,
@@ -34,6 +44,8 @@ import { MarketChartToolbar } from "./market-chart-toolbar"
 type MarketChartPanelProps = {
   assetPair?: string
   className?: string
+  footer?: React.ReactNode
+  livePrice?: number | null
 }
 
 type MeasureAnchor = {
@@ -60,13 +72,37 @@ function getSeriesPrice(
       : null
 }
 
+function zoomVisiblePriceRange(
+  priceScale: IPriceScaleApi,
+  wheelDeltaY: number
+) {
+  const currentRange = priceScale.getVisibleRange()
+  if (!currentRange) return
+
+  const center = (currentRange.from + currentRange.to) / 2
+  const span = currentRange.to - currentRange.from
+  if (!Number.isFinite(span) || span <= 0) return
+
+  const zoomFactor = wheelDeltaY < 0 ? 0.88 : 1.14
+  const nextSpan = Math.max(span * zoomFactor, 0.01)
+
+  priceScale.setAutoScale(false)
+  priceScale.setVisibleRange({
+    from: center - nextSpan / 2,
+    to: center + nextSpan / 2,
+  })
+}
+
 export function MarketChartPanel({
   assetPair = "SOL/USDC",
   className,
+  footer,
+  livePrice,
 }: MarketChartPanelProps) {
   const chartHostRef = React.useRef<HTMLDivElement | null>(null)
   const chartRef = React.useRef<IChartApi | null>(null)
   const seriesRef = React.useRef<ISeriesApi<SeriesType> | null>(null)
+  const priceLineRef = React.useRef<IPriceLine | null>(null)
   const chartTypeRef = React.useRef<MarketChartType>("candles")
 
   const [timeframe, setTimeframe] = React.useState<MarketTimeframe>("15m")
@@ -75,13 +111,91 @@ export function MarketChartPanel({
     React.useState<MeasureAnchor | null>(null)
   const [measurePrice, setMeasurePrice] = React.useState<number | null>(null)
   const [hoverPoint, setHoverPoint] = React.useState<HoverPoint | null>(null)
+  const [displayPrice, setDisplayPrice] = React.useState<number>(171.8)
 
   chartTypeRef.current = chartType
 
-  const dataset = React.useMemo(
+  const baseDataset = React.useMemo(
     () => getMockMarketDataset(timeframe),
     [timeframe]
   )
+  const [liveCandles, setLiveCandles] = React.useState<MarketCandle[]>(() =>
+    baseDataset.candles.slice(-220)
+  )
+
+  React.useEffect(() => {
+    setLiveCandles(baseDataset.candles.slice(-220))
+    setDisplayPrice(baseDataset.price)
+  }, [baseDataset])
+
+  React.useEffect(() => {
+    if (livePrice == null || !Number.isFinite(livePrice) || livePrice <= 0) {
+      return
+    }
+
+    setDisplayPrice(Number(livePrice.toFixed(2)))
+
+    setLiveCandles((current) => {
+      if (current.length === 0) return current
+
+      const next = [...current]
+      const bucketSeconds = getTimeframeSeconds(timeframe)
+      const now = Math.floor(Date.now() / 1000)
+      const bucketTime = Math.floor(now / bucketSeconds) * bucketSeconds
+      const roundedPrice = Number(livePrice.toFixed(2))
+      const last = next[next.length - 1]
+
+      if (last && Number(last.time) === bucketTime) {
+        next[next.length - 1] = {
+          ...last,
+          high: Math.max(last.high, roundedPrice),
+          low: Math.min(last.low, roundedPrice),
+          close: roundedPrice,
+          volume: Number((last.volume + 12 + Math.random() * 18).toFixed(2)),
+        }
+      } else {
+        const open = last?.close ?? roundedPrice
+        next.push({
+          time: bucketTime as UTCTimestamp,
+          open,
+          high: Math.max(open, roundedPrice),
+          low: Math.min(open, roundedPrice),
+          close: roundedPrice,
+          volume: Number((48 + Math.random() * 36).toFixed(2)),
+        })
+      }
+
+      return next.slice(-220)
+    })
+  }, [livePrice, timeframe])
+
+  const dataset = React.useMemo(() => {
+    const candles = liveCandles.length > 0 ? liveCandles : baseDataset.candles
+    const line = candles.map((candle) => ({
+      time: candle.time,
+      value: candle.close,
+    }))
+    const firstOpen = candles[0]?.open ?? 0
+    const lastClose = candles[candles.length - 1]?.close ?? 0
+    const changePercent = firstOpen
+      ? ((lastClose - firstOpen) / firstOpen) * 100
+      : 0
+
+    return {
+      timeframe,
+      candles,
+      line,
+      price: displayPrice > 0 ? displayPrice : lastClose,
+      changePercent: Number(changePercent.toFixed(2)),
+      high: Number(
+        Math.max(...candles.map((candle) => candle.high)).toFixed(2)
+      ),
+      low: Number(Math.min(...candles.map((candle) => candle.low)).toFixed(2)),
+      volume: Number(
+        candles.reduce((sum, candle) => sum + candle.volume, 0).toFixed(2)
+      ),
+    }
+  }, [baseDataset.candles, displayPrice, liveCandles, timeframe])
 
   React.useEffect(() => {
     const container = chartHostRef.current
@@ -192,13 +306,31 @@ export function MarketChartPanel({
 
     resizeObserver.observe(container)
 
+    const handleWheel = (event: WheelEvent) => {
+      const chart = chartRef.current
+      if (!chart || !container) return
+
+      const bounds = container.getBoundingClientRect()
+      const axisHotzone = 72
+      const pointerInsidePriceAxis = event.clientX >= bounds.right - axisHotzone
+
+      if (!pointerInsidePriceAxis) return
+
+      event.preventDefault()
+      zoomVisiblePriceRange(chart.priceScale("right"), event.deltaY)
+    }
+
+    container.addEventListener("wheel", handleWheel, { passive: false })
+
     return () => {
       chart.unsubscribeCrosshairMove(handleCrosshairMove)
       chart.unsubscribeClick(handleClick)
       resizeObserver.disconnect()
+      container.removeEventListener("wheel", handleWheel)
       chart.remove()
       chartRef.current = null
       seriesRef.current = null
+      priceLineRef.current = null
     }
   }, [])
 
@@ -226,6 +358,7 @@ export function MarketChartPanel({
     if (seriesRef.current) {
       chart.removeSeries(seriesRef.current)
       seriesRef.current = null
+      priceLineRef.current = null
     }
 
     if (chartType === "candles") {
@@ -240,14 +373,6 @@ export function MarketChartPanel({
         lastValueVisible: true,
       })
 
-      candleSeries.setData(dataset.candles)
-      candleSeries.createPriceLine({
-        price: dataset.price,
-        color: dataset.changePercent >= 0 ? "#34d399" : "#fb7185",
-        lineWidth: 1,
-        axisLabelVisible: true,
-        title: "Last",
-      })
       seriesRef.current = candleSeries
     } else {
       const lineSeries = chart.addSeries(LineSeries, {
@@ -258,19 +383,35 @@ export function MarketChartPanel({
         crosshairMarkerVisible: true,
       })
 
-      lineSeries.setData(dataset.line)
-      lineSeries.createPriceLine({
-        price: dataset.price,
-        color: dataset.changePercent >= 0 ? "#5eead4" : "#fb7185",
-        lineWidth: 1,
-        axisLabelVisible: true,
-        title: "Last",
-      })
       seriesRef.current = lineSeries
     }
 
     chart.timeScale().fitContent()
-  }, [chartType, dataset, timeframe])
+  }, [chartType, timeframe])
+
+  React.useEffect(() => {
+    const series = seriesRef.current
+    if (!series) return
+
+    if (chartType === "candles") {
+      ;(series as ISeriesApi<"Candlestick">).setData(dataset.candles)
+    } else {
+      ;(series as ISeriesApi<"Line">).setData(dataset.line)
+    }
+
+    if (priceLineRef.current) {
+      series.removePriceLine(priceLineRef.current)
+      priceLineRef.current = null
+    }
+
+    priceLineRef.current = series.createPriceLine({
+      price: dataset.price,
+      color: dataset.changePercent >= 0 ? "#34d399" : "#fb7185",
+      lineWidth: 1,
+      axisLabelVisible: true,
+      title: "Last",
+    })
+  }, [chartType, dataset])
 
   return (
     <Card
@@ -351,6 +492,9 @@ export function MarketChartPanel({
           />
         </div>
       </CardContent>
+      {footer ? (
+        <div className="border-t border-border/60 px-3 py-2.5">{footer}</div>
+      ) : null}
     </Card>
   )
 }

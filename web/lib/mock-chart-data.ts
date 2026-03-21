@@ -39,14 +39,17 @@ const timeframeMinutes: Record<MarketTimeframe, number> = {
   "1d": 1440,
 }
 
+export function getTimeframeSeconds(timeframe: MarketTimeframe) {
+  return timeframeMinutes[timeframe] * 60
+}
+
 function round(value: number) {
   return Number(value.toFixed(2))
 }
 
 function buildBaseCandles(count = 720): MarketCandle[] {
   const candles: MarketCandle[] = []
-  const start =
-    Math.floor(Date.UTC(2026, 2, 18, 0, 0, 0) / 1000) - count * 60
+  const start = Math.floor(Date.UTC(2026, 2, 18, 0, 0, 0) / 1000) - count * 60
   let previousClose = 171.8
 
   for (let index = 0; index < count; index += 1) {

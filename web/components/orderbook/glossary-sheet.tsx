@@ -28,6 +28,7 @@ export function GlossarySheet({
   animated = true,
 }: GlossarySheetProps) {
   const [query, setQuery] = React.useState("")
+  const inputRef = React.useRef<HTMLInputElement | null>(null)
 
   const filteredEntries = React.useMemo(() => {
     const normalized = query.trim().toLowerCase()
@@ -46,6 +47,11 @@ export function GlossarySheet({
         side="right"
         animated={animated}
         className="w-full p-0 sm:max-w-[680px]"
+        onOpenAutoFocus={(event) => {
+          event.preventDefault()
+          inputRef.current?.focus()
+          inputRef.current?.select()
+        }}
       >
         <SheetHeader className="gap-2">
           <div className="flex items-center justify-between gap-2">
@@ -69,6 +75,7 @@ export function GlossarySheet({
             on orderbook and market microstructure concepts.
           </SheetDescription>
           <Input
+            ref={inputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search spread, maker, top of book, slippage..."
@@ -87,7 +94,7 @@ export function GlossarySheet({
           <div className="space-y-4 px-4 pt-4 pb-12">
             {filteredEntries.map((entry) => (
               <section
-                key={entry.term}
+                key={`${entry.category}-${entry.term}`}
                 className="border border-border/60 bg-background/40 p-3"
               >
                 <div className="flex items-center gap-2">
