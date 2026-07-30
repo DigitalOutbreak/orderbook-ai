@@ -6,7 +6,7 @@ title: 08 Performance Bridge
 
 This chapter is a bridge into the heavier performance notes.
 
-Read this before [docs/engine-performance.md](/Users/joeyalvarado/Developer/solbook-core/docs/engine-performance.md)
+Read this before [docs/engine-performance.md](../engine-performance.md)
 if words like "hot path," "allocation," and "throughput" still feel abstract.
 
 ## What performance means here

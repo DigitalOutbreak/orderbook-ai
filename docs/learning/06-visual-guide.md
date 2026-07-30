@@ -284,7 +284,7 @@ Why this matters:
 
 ## How to use this chapter while studying code
 
-When reading [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs):
+When reading [src/matching.rs](../../src/matching.rs):
 
 1. keep Diagram 1 open to remember the broad flow
 2. keep Diagram 2 open to remember where state lives

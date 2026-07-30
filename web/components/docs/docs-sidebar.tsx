@@ -44,21 +44,24 @@ export function DocsSidebar({ pages, activeSlug }: DocsSidebarProps) {
     if (typeof window === "undefined" || activeSections.length === 0) return
 
     const currentActiveSection = activeSections[0]
-
-    let restoredSections = activeSections
-    const stored = window.sessionStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      try {
-        restoredSections = JSON.parse(stored) as string[]
-      } catch {
-        restoredSections = activeSections
+    const frame = window.requestAnimationFrame(() => {
+      let restoredSections = activeSections
+      const stored = window.sessionStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        try {
+          restoredSections = JSON.parse(stored) as string[]
+        } catch {
+          restoredSections = activeSections
+        }
       }
-    }
 
-    const next = new Set(restoredSections)
-    next.add(currentActiveSection)
-    setAnimateSections(false)
-    setOpenSections(Array.from(next))
+      const next = new Set(restoredSections)
+      next.add(currentActiveSection)
+      setAnimateSections(false)
+      setOpenSections(Array.from(next))
+    })
+
+    return () => window.cancelAnimationFrame(frame)
   }, [activeSections])
 
   useEffect(() => {
@@ -154,12 +157,12 @@ export function DocsSidebar({ pages, activeSlug }: DocsSidebarProps) {
             <Button asChild variant="outline" size="xs">
               <Link href="/learn">Learn</Link>
             </Button>
-            <a
+            <Link
               href="/"
               className={cn(buttonVariants({ variant: "outline", size: "xs" }))}
             >
               Terminal
-            </a>
+            </Link>
           </div>
           <Button
             type="button"

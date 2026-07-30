@@ -71,9 +71,6 @@ const simulationSpeeds: EngineSimulationSpeed[] = [
 const compactButtonClassName =
   "justify-center font-mono text-[9px] tracking-[0.05em] uppercase px-1.5"
 
-const selectedButtonClassName =
-  "border-border/80 bg-muted text-foreground hover:bg-muted/90"
-
 export function ScenarioControls({
   onSnapshotChange,
   onScenarioEvent,

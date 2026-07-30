@@ -50,17 +50,17 @@ matching flow.
 
 Before reading code, make sure these terms are at least somewhat familiar:
 
-- [Order book](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Bid](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Ask](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Price level](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [FIFO](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Limit order](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Market order](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Maker](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Taker](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Trade](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Price-time priority](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
+- [Order book](../glossary.md)
+- [Bid](../glossary.md)
+- [Ask](../glossary.md)
+- [Price level](../glossary.md)
+- [FIFO](../glossary.md)
+- [Limit order](../glossary.md)
+- [Market order](../glossary.md)
+- [Maker](../glossary.md)
+- [Taker](../glossary.md)
+- [Trade](../glossary.md)
+- [Price-time priority](../glossary.md)
 
 If any of those are fuzzy, pause and read the glossary first.
 
@@ -93,12 +93,12 @@ You understand this engine when you can explain, in plain English:
 
 Start with:
 
-- [src/lib.rs](/Users/joeyalvarado/Developer/solbook-core/src/lib.rs)
-- [src/order.rs](/Users/joeyalvarado/Developer/solbook-core/src/order.rs)
-- [src/order_book.rs](/Users/joeyalvarado/Developer/solbook-core/src/order_book.rs)
+- [src/lib.rs](../../src/lib.rs)
+- [src/order.rs](../../src/order.rs)
+- [src/order_book.rs](../../src/order_book.rs)
 
 Do not start with the UI.
-If you want a visual aid later, use the learning terminal in [`web/`](/Users/joeyalvarado/Developer/solbook-core/web) after the core flow makes sense.
+If you want a visual aid later, use the learning terminal in [`web/`](../../web) after the core flow makes sense.
 
 ## First mindset to keep
 

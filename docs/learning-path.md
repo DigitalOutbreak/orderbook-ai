@@ -27,7 +27,7 @@ If you ever feel lost, go back one step instead of forcing yourself forward.
 
 1. Read one chapter slowly.
 2. Write down unfamiliar words.
-3. Look them up in [docs/glossary.md](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md).
+3. Look them up in [docs/glossary.md](./glossary.md).
 4. Open the referenced source files.
 5. Run the related tests or benchmark.
 6. Trace one concrete scenario end to end.
@@ -42,11 +42,11 @@ If you ever feel lost, go back one step instead of forcing yourself forward.
 
 ## Best first live exercises
 
-1. Open [src/order.rs](/Users/joeyalvarado/Developer/solbook-core/src/order.rs) and identify the difference between `NewOrderRequest` and `Order`.
+1. Open [src/order.rs](../src/order.rs) and identify the difference between `NewOrderRequest` and `Order`.
 2. Run `cargo test matching -- --nocapture`.
-3. Open [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs) and narrate one submit path.
+3. Open [src/matching.rs](../src/matching.rs) and narrate one submit path.
 4. Run `cargo bench --bench throughput submit_resting_limit_orders_minimal_no_invariants -- --sample-size 10`.
-5. After that, open the learning terminal in [`web/`](/Users/joeyalvarado/Developer/solbook-core/web) and compare the UI state with the core snapshots and events.
+5. After that, open the learning terminal in [`web/`](../web) and compare the UI state with the core snapshots and events.
 
 ## What this learning path is trying to teach
 

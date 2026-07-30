@@ -96,23 +96,23 @@ When a new order comes in, the engine roughly does this:
 
 ## Files to open while reading
 
-- [src/lib.rs](/Users/joeyalvarado/Developer/solbook-core/src/lib.rs)
-- [src/order_book.rs](/Users/joeyalvarado/Developer/solbook-core/src/order_book.rs)
-- [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs)
-- [web/components/orderbook/orderbook-terminal.tsx](/Users/joeyalvarado/Developer/solbook-core/web/components/orderbook/orderbook-terminal.tsx)
-- [web/components/market-chart/market-chart-panel.tsx](/Users/joeyalvarado/Developer/solbook-core/web/components/market-chart/market-chart-panel.tsx)
-- [web/app/docs/[slug]/page.tsx](/Users/joeyalvarado/Developer/solbook-core/web/app/docs/[slug]/page.tsx)
+- [src/lib.rs](../../src/lib.rs)
+- [src/order_book.rs](../../src/order_book.rs)
+- [src/matching.rs](../../src/matching.rs)
+- [web/components/orderbook/orderbook-terminal.tsx](../../web/components/orderbook/orderbook-terminal.tsx)
+- [web/components/market-chart/market-chart-panel.tsx](../../web/components/market-chart/market-chart-panel.tsx)
+- [web/app/docs/[slug]/page.tsx](../../web/app/docs/[slug]/page.tsx)
 
 ## Words to look up if needed
 
 If any of these feel fuzzy, stop and read them in the glossary:
 
-- [Deterministic](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Order book](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Bid](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Ask](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Price-time priority](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Event stream](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
+- [Deterministic](../glossary.md)
+- [Order book](../glossary.md)
+- [Bid](../glossary.md)
+- [Ask](../glossary.md)
+- [Price-time priority](../glossary.md)
+- [Event stream](../glossary.md)
 
 ## Check yourself
 

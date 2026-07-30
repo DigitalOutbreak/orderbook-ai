@@ -104,6 +104,9 @@ export function MarketChartPanel({
   const seriesRef = React.useRef<ISeriesApi<SeriesType> | null>(null)
   const priceLineRef = React.useRef<IPriceLine | null>(null)
   const chartTypeRef = React.useRef<MarketChartType>("candles")
+  const timeframeRef = React.useRef<MarketTimeframe>("15m")
+  const measureAnchorRef = React.useRef<MeasureAnchor | null>(null)
+  const hoverPointRef = React.useRef<HoverPoint | null>(null)
 
   const [timeframe, setTimeframe] = React.useState<MarketTimeframe>("15m")
   const [chartType, setChartType] = React.useState<MarketChartType>("candles")
@@ -113,7 +116,12 @@ export function MarketChartPanel({
   const [hoverPoint, setHoverPoint] = React.useState<HoverPoint | null>(null)
   const [displayPrice, setDisplayPrice] = React.useState<number>(171.8)
 
-  chartTypeRef.current = chartType
+  React.useEffect(() => {
+    chartTypeRef.current = chartType
+    timeframeRef.current = timeframe
+    measureAnchorRef.current = measureAnchor
+    hoverPointRef.current = hoverPoint
+  }, [chartType, hoverPoint, measureAnchor, timeframe])
 
   const baseDataset = React.useMemo(
     () => getMockMarketDataset(timeframe),
@@ -235,7 +243,7 @@ export function MarketChartPanel({
         rightOffset: 4,
         barSpacing: 8,
         minBarSpacing: 4,
-        timeVisible: timeframe !== "1d",
+        timeVisible: timeframeRef.current !== "1d",
         secondsVisible: false,
       },
       localization: {
@@ -265,7 +273,7 @@ export function MarketChartPanel({
       )
       if (price == null) {
         setHoverPoint(null)
-        if (measureAnchor) setMeasurePrice(null)
+        if (measureAnchorRef.current) setMeasurePrice(null)
         return
       }
 
@@ -280,17 +288,18 @@ export function MarketChartPanel({
           : "Cursor"
 
       setHoverPoint({ price, timeLabel })
-      if (measureAnchor) setMeasurePrice(price)
+      if (measureAnchorRef.current) setMeasurePrice(price)
     }
 
     const handleClick = (param: MouseEventParams) => {
-      if (!param.sourceEvent?.shiftKey || !hoverPoint) return
+      const currentHoverPoint = hoverPointRef.current
+      if (!param.sourceEvent?.shiftKey || !currentHoverPoint) return
 
       setMeasureAnchor({
-        price: hoverPoint.price,
-        timeLabel: hoverPoint.timeLabel,
+        price: currentHoverPoint.price,
+        timeLabel: currentHoverPoint.timeLabel,
       })
-      setMeasurePrice(hoverPoint.price)
+      setMeasurePrice(currentHoverPoint.price)
     }
 
     chart.subscribeCrosshairMove(handleCrosshairMove)
@@ -387,7 +396,7 @@ export function MarketChartPanel({
     }
 
     chart.timeScale().fitContent()
-  }, [chartType, timeframe])
+  }, [chartType, dataset.changePercent, timeframe])
 
   React.useEffect(() => {
     const series = seriesRef.current

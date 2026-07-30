@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Raleway } from "next/font/google"
+import { Geist_Mono, Raleway } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"

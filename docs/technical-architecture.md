@@ -28,7 +28,7 @@ The crate is not responsible for networking, persistence, balances, settlement, 
 
 For the performance-oriented explanation of why those structures were chosen
 and where they will become bottlenecks, see
-[`docs/engine-performance.md`](/Users/joeyalvarado/Developer/solbook-core/docs/engine-performance.md).
+[`docs/engine-performance.md`](./engine-performance.md).
 
 ## Determinism rules
 

@@ -1,11 +1,14 @@
-# solbook-core
+# Rust Order Book & Matching Engine
 
 `solbook-core` is a deterministic Rust exchange-core library for a `SOL/USDC` spot market. It provides a single-threaded in-memory order book, exact decimal validation, price-time priority matching, structured event emission, cancellation, and snapshot helpers.
+
+![SOL/USDC learning terminal backed by the Rust matching engine](docs/images/rust-order-book.webp)
 
 The project should be read engine-first:
 
 - `solbook-core` is the main artifact
-- `web/` is the learning terminal and docs interface around the core concepts
+- `src/bin/solbook-http.rs` exposes the engine through a small Axum API and server-sent event stream
+- `web/` is the Next.js learning terminal and documentation interface
 
 ## Scope
 
@@ -36,7 +39,7 @@ The core modules follow the responsibilities defined in the handoff docs:
 The engine uses `rust_decimal` for exact arithmetic and monotonic `OrderId` plus `SequenceNumber` counters for deterministic replayable behavior.
 
 If your goal is to learn matching engines rather than adapters, start with
-[`docs/engine-performance.md`](/Users/joeyalvarado/Developer/solbook-core/docs/engine-performance.md).
+[`docs/engine-performance.md`](docs/engine-performance.md).
 
 ## Public API
 
@@ -79,11 +82,7 @@ If a later project needs a visual UI or external clients, the core is already sh
 - the crate exposes deterministic state transitions, which is what a frontend needs for replay and time-travel debugging
 - optional `serde` support is available for JSON transport
 
-Enable it with:
-
-- `cargo add solbook-core --features serde`
-
-or in a workspace dependency:
+Enable it in a workspace dependency:
 
 ```toml
 solbook-core = { path = "../solbook-core", features = ["serde"] }
@@ -91,7 +90,7 @@ solbook-core = { path = "../solbook-core", features = ["serde"] }
 
 That is the intended boundary for a future HTTP API, WebSocket stream, Tauri app, or other external adapter.
 
-This repository also includes a learning-oriented web interface in [`web/`](/Users/joeyalvarado/Developer/solbook-core/web) for studying orderbook behavior, chart state, and UI concepts alongside the engine docs.
+This repository also includes a learning-oriented web interface in [`web/`](web) for studying orderbook behavior, chart state, and UI concepts alongside the engine docs.
 
 ## Invariants
 
@@ -108,19 +107,27 @@ The implementation preserves these invariants after every successful mutation:
 
 ## Docs
 
-Supporting docs live in [`docs/architecture.md`](/Users/joeyalvarado/Developer/solbook-core/docs/architecture.md), [`docs/glossary.md`](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md), [`docs/milestones.md`](/Users/joeyalvarado/Developer/solbook-core/docs/milestones.md), and [`docs/technical-architecture.md`](/Users/joeyalvarado/Developer/solbook-core/docs/technical-architecture.md).
+Supporting docs live in [`docs/architecture.md`](docs/architecture.md), [`docs/glossary.md`](docs/glossary.md), [`docs/milestones.md`](docs/milestones.md), and [`docs/technical-architecture.md`](docs/technical-architecture.md).
 
-For engine internals and tradeoffs, read [`docs/engine-performance.md`](/Users/joeyalvarado/Developer/solbook-core/docs/engine-performance.md).
+For engine internals and tradeoffs, read [`docs/engine-performance.md`](docs/engine-performance.md).
 
-If you want to study the repo as a guided project, start with [`docs/learning-path.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning-path.md) and begin at [`docs/learning/00-start-here.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/00-start-here.md). The visual mental models live in [`docs/learning/06-visual-guide.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/06-visual-guide.md), the design-tradeoff explanation lives in [`docs/learning/07-why-this-design.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/07-why-this-design.md), and the beginner-friendly performance bridge lives in [`docs/learning/08-performance-bridge.md`](/Users/joeyalvarado/Developer/solbook-core/docs/learning/08-performance-bridge.md).
+If you want to study the repo as a guided project, start with [`docs/learning-path.md`](docs/learning-path.md) and begin at [`docs/learning/00-start-here.md`](docs/learning/00-start-here.md). The visual mental models live in [`docs/learning/06-visual-guide.md`](docs/learning/06-visual-guide.md), the design-tradeoff explanation lives in [`docs/learning/07-why-this-design.md`](docs/learning/07-why-this-design.md), and the beginner-friendly performance bridge lives in [`docs/learning/08-performance-bridge.md`](docs/learning/08-performance-bridge.md).
 
 ## Web Learning Terminal
 
-The repository includes [`web/`](/Users/joeyalvarado/Developer/solbook-core/web), a Next.js + shadcn study interface for reading docs and exploring trading-terminal UI ideas alongside mock orderbook state.
+The repository includes [`web/`](web), a Next.js + shadcn study interface wired to the live Rust engine.
 
-Run it with:
+Run the engine API and web interface in separate terminals:
 
-- `cd web && npm run dev`
+```bash
+cargo run --bin solbook-http
+```
+
+```bash
+cd web
+npm install
+npm run dev
+```
 
 ## Quality gates
 
@@ -137,9 +144,9 @@ The repository currently includes integration tests for matching, FIFO, market o
 
 ## Benchmark scaffold
 
-The repo now includes a Criterion benchmark scaffold in [`benches/throughput.rs`](/Users/joeyalvarado/Developer/solbook-core/benches/throughput.rs) for repeatable submission throughput measurements.
+The repo now includes a Criterion benchmark scaffold in [`benches/throughput.rs`](benches/throughput.rs) for repeatable submission throughput measurements.
 
-There is also an isolated data-structure benchmark in [`benches/price_level_prototypes.rs`](/Users/joeyalvarado/Developer/solbook-core/benches/price_level_prototypes.rs) for comparing candidate price-level storage designs outside the main engine.
+There is also an isolated data-structure benchmark in [`benches/price_level_prototypes.rs`](benches/price_level_prototypes.rs) for comparing candidate price-level storage designs outside the main engine.
 
 Run it with:
 
@@ -173,17 +180,17 @@ The default invariant mode is `InvariantPolicy::Local`, which checks only the
 levels and index entries touched by a mutation. Use `InvariantPolicy::Full` when
 you want a whole-book verification pass after every mutation.
 
-Current local baseline notes live in [`docs/performance.md`](/Users/joeyalvarado/Developer/solbook-core/docs/performance.md).
+Current local baseline notes live in [`docs/performance.md`](docs/performance.md).
 
 ## Deterministic regression fixtures
 
-The integration suite now includes replay-style deterministic fixtures in [`tests/support/mod.rs`](/Users/joeyalvarado/Developer/solbook-core/tests/support/mod.rs) and [`tests/replay.rs`](/Users/joeyalvarado/Developer/solbook-core/tests/replay.rs). These scenarios assert that repeated runs over the same operation stream produce identical events, summaries, and final snapshots.
+The integration suite now includes replay-style deterministic fixtures in [`tests/support/mod.rs`](tests/support/mod.rs) and [`tests/replay.rs`](tests/replay.rs). These scenarios assert that repeated runs over the same operation stream produce identical events, summaries, and final snapshots.
 
-There is also a seeded mixed-operation stress test and a property-based replayability test in [`tests/property.rs`](/Users/joeyalvarado/Developer/solbook-core/tests/property.rs) that assert ordering, positive resting quantities, best-price consistency, and repeatable outcomes across generated flows.
+There is also a seeded mixed-operation stress test and a property-based replayability test in [`tests/property.rs`](tests/property.rs) that assert ordering, positive resting quantities, best-price consistency, and repeatable outcomes across generated flows.
 
 ## Fuzzing
 
-Real fuzz targets now live under [`fuzz/`](/Users/joeyalvarado/Developer/solbook-core/fuzz).
+Real fuzz targets now live under [`fuzz/`](fuzz).
 
 Setup:
 
@@ -200,15 +207,15 @@ The fuzz targets stress mixed order submission and cancellation flows and assert
 
 Seed corpora live in:
 
-- [`fuzz/corpus/order_flow`](/Users/joeyalvarado/Developer/solbook-core/fuzz/corpus/order_flow)
-- [`fuzz/corpus/replay_consistency`](/Users/joeyalvarado/Developer/solbook-core/fuzz/corpus/replay_consistency)
+- [`fuzz/corpus/order_flow`](fuzz/corpus/order_flow)
+- [`fuzz/corpus/replay_consistency`](fuzz/corpus/replay_consistency)
 
 ## Release hygiene
 
 The repository now includes:
 
-- [`CHANGELOG.md`](/Users/joeyalvarado/Developer/solbook-core/CHANGELOG.md)
-- [`LICENSE`](/Users/joeyalvarado/Developer/solbook-core/LICENSE)
+- [`CHANGELOG.md`](CHANGELOG.md)
+- [`LICENSE`](LICENSE)
 
 Package validation can be checked with:
 

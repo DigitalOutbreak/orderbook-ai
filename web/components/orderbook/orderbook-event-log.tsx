@@ -41,12 +41,12 @@ export function OrderbookEventLog({
           >
             Glossary
           </Button>
-          <a
+          <Link
             href="/docs/learning-path"
             className={cn(buttonVariants({ variant: "outline", size: "xs" }))}
           >
             Docs
-          </a>
+          </Link>
           <Button asChild type="button" variant="outline" size="xs">
             <Link href="/learn/lessons">Lessons</Link>
           </Button>

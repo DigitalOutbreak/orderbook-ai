@@ -11,7 +11,7 @@ Learn the main types before trying to follow the matching logic.
 This chapter is about vocabulary and ownership.
 
 If a term is unfamiliar, stop and look it up in
-[docs/glossary.md](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
+[docs/glossary.md](../glossary.md)
 before continuing.
 
 ## Why this matters
@@ -26,11 +26,11 @@ This repo intentionally keeps those separate.
 
 ## Read these files
 
-- [src/types.rs](/Users/joeyalvarado/Developer/solbook-core/src/types.rs)
-- [src/order.rs](/Users/joeyalvarado/Developer/solbook-core/src/order.rs)
-- [src/market_config.rs](/Users/joeyalvarado/Developer/solbook-core/src/market_config.rs)
-- [src/errors.rs](/Users/joeyalvarado/Developer/solbook-core/src/errors.rs)
-- [src/events.rs](/Users/joeyalvarado/Developer/solbook-core/src/events.rs)
+- [src/types.rs](../../src/types.rs)
+- [src/order.rs](../../src/order.rs)
+- [src/market_config.rs](../../src/market_config.rs)
+- [src/errors.rs](../../src/errors.rs)
+- [src/events.rs](../../src/events.rs)
 
 ## The most important type split
 
@@ -122,13 +122,13 @@ For that field, ask:
 
 ## Words to look up if needed
 
-- [NewOrderRequest](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Order](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Trade](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Market config](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Validation](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Rejection](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Sequence number](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
+- [NewOrderRequest](../glossary.md)
+- [Order](../glossary.md)
+- [Trade](../glossary.md)
+- [Market config](../glossary.md)
+- [Validation](../glossary.md)
+- [Rejection](../glossary.md)
+- [Sequence number](../glossary.md)
 
 ## Check yourself
 

@@ -7,7 +7,7 @@ title: Performance
 This document records the benchmark and profiling path for the engine.
 
 For the structural explanation of the matching engine through a performance
-lens, read [`docs/engine-performance.md`](/Users/joeyalvarado/Developer/solbook-core/docs/engine-performance.md).
+lens, read [`docs/engine-performance.md`](./engine-performance.md).
 
 ## Benchmark command
 

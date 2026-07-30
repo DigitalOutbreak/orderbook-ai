@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DOCS_PAGES } from "@/lib/docs-config"
-import { cn } from "@/lib/utils"
 
 type Block =
   | { type: "heading"; level: number; text: string; id: string }
@@ -68,17 +67,23 @@ function renderInline(text: string): React.ReactNode[] {
       const href = match[4]
       const normalizedHref = href.replace(/\\/g, "/")
       const docsPathMatch = normalizedHref.match(/(?:^|\/)docs\/(.+?\.md)$/)
+      const repositoryRelativePath = normalizedHref
+        .replace(/^(\.\.\/)+/, "")
+        .replace(/^docs\//, "")
       const docsSlug =
         (docsPathMatch && docsLookup.get(docsPathMatch[1])) ||
-        docsLookup.get(normalizedHref.replace(/^\/+/, ""))
+        docsLookup.get(normalizedHref.replace(/^\/+/, "")) ||
+        docsLookup.get(repositoryRelativePath)
       const resolvedHref = docsSlug ? `/docs/${docsSlug}` : href
-      const localFilePath = normalizedHref.startsWith("/Users/")
+      const repositoryFilePath =
+        normalizedHref.startsWith("../") ||
+        /^(src|tests|benches|examples|fuzz|web)\//.test(normalizedHref)
       const external =
         resolvedHref.startsWith("http") ||
         resolvedHref.startsWith("mailto:") ||
         resolvedHref.startsWith("tel:")
 
-      if (localFilePath && !docsSlug) {
+      if (repositoryFilePath && !docsSlug) {
         tokens.push(
           <code
             key={`${match.index}-file`}

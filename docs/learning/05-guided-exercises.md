@@ -11,7 +11,7 @@ The goal is to make the engine feel predictable.
 
 ## Before you start
 
-Keep [docs/glossary.md](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md) open in another tab.
+Keep [docs/glossary.md](../glossary.md) open in another tab.
 
 If a word feels vague, stop and look it up.
 
@@ -23,9 +23,9 @@ Goal:
 
 Do this:
 
-1. Read [tests/matching.rs](/Users/joeyalvarado/Developer/solbook-core/tests/matching.rs).
-2. Read [src/validation.rs](/Users/joeyalvarado/Developer/solbook-core/src/validation.rs).
-3. Read [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs).
+1. Read [tests/matching.rs](../../tests/matching.rs).
+2. Read [src/validation.rs](../../src/validation.rs).
+3. Read [src/matching.rs](../../src/matching.rs).
 4. Run `cargo test matching -- --nocapture`.
 
 Questions to answer:
@@ -43,9 +43,9 @@ Goal:
 
 Do this:
 
-1. Read [tests/partial_fills.rs](/Users/joeyalvarado/Developer/solbook-core/tests/partial_fills.rs).
-2. Read [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs).
-3. Read [src/events.rs](/Users/joeyalvarado/Developer/solbook-core/src/events.rs).
+1. Read [tests/partial_fills.rs](../../tests/partial_fills.rs).
+2. Read [src/matching.rs](../../src/matching.rs).
+3. Read [src/events.rs](../../src/events.rs).
 
 Questions to answer:
 
@@ -61,9 +61,9 @@ Goal:
 
 Do this:
 
-1. Read [tests/cancels.rs](/Users/joeyalvarado/Developer/solbook-core/tests/cancels.rs).
-2. Read [src/order_book.rs](/Users/joeyalvarado/Developer/solbook-core/src/order_book.rs).
-3. Read [src/price_level.rs](/Users/joeyalvarado/Developer/solbook-core/src/price_level.rs).
+1. Read [tests/cancels.rs](../../tests/cancels.rs).
+2. Read [src/order_book.rs](../../src/order_book.rs).
+3. Read [src/price_level.rs](../../src/price_level.rs).
 
 Questions to answer:
 
@@ -80,7 +80,7 @@ Goal:
 
 Do this:
 
-1. Read [docs/engine-performance.md](/Users/joeyalvarado/Developer/solbook-core/docs/engine-performance.md).
+1. Read [docs/engine-performance.md](../engine-performance.md).
 2. Run `cargo bench --bench throughput submit_resting_limit_orders_minimal_no_invariants -- --sample-size 10`.
 3. Run `cargo bench --bench throughput cancel_deep_single_price_level_minimal_no_invariants -- --sample-size 10`.
 
@@ -99,7 +99,7 @@ Goal:
 
 Do this:
 
-1. Open the learning terminal in [`web/`](/Users/joeyalvarado/Developer/solbook-core/web).
+1. Open the learning terminal in [`web/`](../../web).
 2. Submit a few mock orders through the order form.
 3. Inspect the orderbook, recent trades, and event log after each action.
 

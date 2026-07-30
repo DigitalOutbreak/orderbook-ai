@@ -12,7 +12,7 @@ Do not try to understand every helper at once.
 Focus on one concrete story.
 
 If words like maker, taker, crossing, or resting feel fuzzy, stop and look them
-up in [docs/glossary.md](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
+up in [docs/glossary.md](../glossary.md)
 before reading the code.
 
 ## The story to follow
@@ -28,21 +28,21 @@ Use this simple scenario:
 That one scenario teaches most of the engine.
 
 If you want a picture before reading the code, keep
-[docs/learning/06-visual-guide.md](/Users/joeyalvarado/Developer/solbook-core/docs/learning/06-visual-guide.md)
+[docs/learning/06-visual-guide.md](../learning/06-visual-guide.md)
 open beside this chapter.
 
 ## Read these files
 
-- [src/validation.rs](/Users/joeyalvarado/Developer/solbook-core/src/validation.rs)
-- [src/price_level.rs](/Users/joeyalvarado/Developer/solbook-core/src/price_level.rs)
-- [src/order_book.rs](/Users/joeyalvarado/Developer/solbook-core/src/order_book.rs)
-- [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs)
+- [src/validation.rs](../../src/validation.rs)
+- [src/price_level.rs](../../src/price_level.rs)
+- [src/order_book.rs](../../src/order_book.rs)
+- [src/matching.rs](../../src/matching.rs)
 
 ## Tests to read with the code
 
-- [tests/matching.rs](/Users/joeyalvarado/Developer/solbook-core/tests/matching.rs)
-- [tests/partial_fills.rs](/Users/joeyalvarado/Developer/solbook-core/tests/partial_fills.rs)
-- [tests/fifo.rs](/Users/joeyalvarado/Developer/solbook-core/tests/fifo.rs)
+- [tests/matching.rs](../../tests/matching.rs)
+- [tests/partial_fills.rs](../../tests/partial_fills.rs)
+- [tests/fifo.rs](../../tests/fifo.rs)
 
 ## The engine path in plain English
 
@@ -107,17 +107,17 @@ You only need to understand each structure's job.
 
 ## Words to look up if needed
 
-- [Crossing order](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Maker](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Taker](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Partial fill](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Resting order](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Price level](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
-- [Invariant](/Users/joeyalvarado/Developer/solbook-core/docs/glossary.md)
+- [Crossing order](../glossary.md)
+- [Maker](../glossary.md)
+- [Taker](../glossary.md)
+- [Partial fill](../glossary.md)
+- [Resting order](../glossary.md)
+- [Price level](../glossary.md)
+- [Invariant](../glossary.md)
 
 ## Study prompt
 
-Open `submit_order` in [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs) and explain it in ordinary language.
+Open `submit_order` in [src/matching.rs](../../src/matching.rs) and explain it in ordinary language.
 
 If you can describe:
 

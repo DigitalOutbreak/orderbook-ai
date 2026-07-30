@@ -20,9 +20,9 @@ For an accepted order, the hot path is:
 
 The most performance-sensitive code is in:
 
-- [src/matching.rs](/Users/joeyalvarado/Developer/solbook-core/src/matching.rs)
-- [src/order_book.rs](/Users/joeyalvarado/Developer/solbook-core/src/order_book.rs)
-- [src/price_level.rs](/Users/joeyalvarado/Developer/solbook-core/src/price_level.rs)
+- [src/matching.rs](../src/matching.rs)
+- [src/order_book.rs](../src/order_book.rs)
+- [src/price_level.rs](../src/price_level.rs)
 
 ## Current in-memory design
 
@@ -149,7 +149,7 @@ That is a useful lesson by itself. More bookkeeping is not automatically more pe
 
 To support that next step without destabilizing the engine, the repository now
 includes an isolated prototype benchmark in
-[`benches/price_level_prototypes.rs`](/Users/joeyalvarado/Developer/solbook-core/benches/price_level_prototypes.rs)
+[`benches/price_level_prototypes.rs`](../benches/price_level_prototypes.rs)
 that compares:
 
 - a simple `VecDeque` level

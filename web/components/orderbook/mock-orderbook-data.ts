@@ -180,6 +180,6 @@ export function getMaxTotal(levels: OrderbookLevel[]) {
 
 export function formatUtcTimestamp(date = new Date()) {
   const iso = date.toISOString().replace("T", " ").replace("Z", "")
-  const [day, time] = iso.split(" ")
+  const [, time] = iso.split(" ")
   return `${time} UTC`
 }
