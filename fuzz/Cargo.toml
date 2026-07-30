@@ -9,6 +9,7 @@ cargo-fuzz = true
 
 [dependencies]
 libfuzzer-sys = "0.4"
+rust_decimal = "1.39.0"
 solbook-core = { path = ".." }
 
 [workspace]
